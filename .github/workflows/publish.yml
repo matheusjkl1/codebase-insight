@@ -30,7 +30,7 @@ jobs:
         run: npm run build
 
       - name: 🚀 Publicar Pacote no NPM
-        run: npm publish --access public
+        run: npm publish --access public --provenance
         env:
           # O NPM_TOKEN precisa ser criado na sua conta do NPM e adicionado no 
           # GitHub do projeto em: Settings > Secrets and variables > Actions
