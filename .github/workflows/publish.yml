@@ -1,0 +1,37 @@
+name: NPM Publish
+
+on:
+  push:
+    tags:
+      - 'v*' # Dispara o deploy apenas quando o git detectar uma nova tag com "v" (ex: v1.1.0)
+
+jobs:
+  publish-npm:
+    name: Build & Publish to npmjs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: 📥 Checkout do Código Fonte
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: 📦 Instalar Dependências (Clean Install)
+        run: npm ci
+
+      - name: 🏗️ Compilar Pacote (Build)
+        run: npm run build
+
+      - name: 🚀 Publicar Pacote no NPM
+        run: npm publish --access public
+        env:
+          # O NPM_TOKEN precisa ser criado na sua conta do NPM e adicionado no 
+          # GitHub do projeto em: Settings > Secrets and variables > Actions
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
