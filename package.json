@@ -1,7 +1,11 @@
 {
   "name": "codebase-insight",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Library that traces repositories extracting context and insights with custom memory caching RAGs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matheusjkl1/codebase-insight.git"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
