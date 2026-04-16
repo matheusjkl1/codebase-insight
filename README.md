@@ -33,7 +33,9 @@ import { config } from 'dotenv';
 import { 
   analyzeCodebase, 
   OpenAIEmbeddingProvider, 
-  OpenRouterAnalyzerProvider 
+  OpenRouterAnalyzerProvider,
+  OpenRouterEmbeddingProvider,
+  OpenAIAnalyzerProvider
 } from 'codebase-insight';
 
 // Carrega as suas próprias de variáveis de ambiente
@@ -41,12 +43,14 @@ config();
 
 async function run() {
   // 1. Instancie e configure seus provedores de Embedding e Análise LLM usando a sua chave 
-  const embedProvider = new OpenAIEmbeddingProvider(process.env.OPENAI_API_KEY, 'text-embedding-3-small');
-  
+   const embedProvider = 
+    new OpenAIEmbeddingProvider(process.env.OPENAI_API_KEY, 'text-embedding-3-small') ||
+    new OpenRouterEmbeddingProvider(process.env.OPENROUTER_API_KEY, 'nvidia/llama-nemotron-embed-vl-1b-v2:free');
+
   const aiProvider = new OpenRouterAnalyzerProvider(
     process.env.OPENROUTER_API_KEY, 
     'openai/gpt-4o-mini' // Pode usar anthropic/claude-3-haiku, etc!
-  );
+  ) || new OpenAIAnalyzerProvider(process.env.OPENAI_API_KEY, 'gpt-4o-mini');
 
   // 2. Chame a função principal apontando o caminhando do projeto que deve ser lido
   await analyzeCodebase({
@@ -123,7 +127,9 @@ import { config } from 'dotenv';
 import { 
   analyzeCodebase, 
   OpenAIEmbeddingProvider, 
-  OpenRouterAnalyzerProvider 
+  OpenRouterAnalyzerProvider,
+  OpenRouterEmbeddingProvider,
+  OpenAIAnalyzerProvider
 } from 'codebase-insight';
 
 // Load your own environment variables
@@ -131,12 +137,13 @@ config();
 
 async function run() {
   // 1. Instantiate and configure your Embedding and LLM Analysis providers using your keys
-  const embedProvider = new OpenAIEmbeddingProvider(process.env.OPENAI_API_KEY, 'text-embedding-3-small');
+  const embedProvider = new OpenAIEmbeddingProvider(process.env.OPENAI_API_KEY, 'text-embedding-3-small') ||
+    new OpenRouterEmbeddingProvider(process.env.OPENROUTER_API_KEY, 'nvidia/llama-nemotron-embed-vl-1b-v2:free');
   
   const aiProvider = new OpenRouterAnalyzerProvider(
     process.env.OPENROUTER_API_KEY, 
     'openai/gpt-4o-mini' // You can use anthropic/claude-3-haiku, etc!
-  );
+  ) || new OpenAIAnalyzerProvider(process.env.OPENAI_API_KEY, 'gpt-4o-mini');
 
   // 2. Call the main function pointing to the project path to be read
   await analyzeCodebase({
