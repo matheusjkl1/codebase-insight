@@ -1,7 +1,7 @@
 {
   "name": "codebase-insight",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.1.0",
+  "description": "Library that traces repositories extracting context and insights with custom memory caching RAGs",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -24,7 +24,11 @@
     "format": "prettier --write 'src/**/*.ts'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "ai",
+    "code-analysis",
+    "llm"
+  ],
   "author": "Matheus Mendes",
   "license": "MIT",
   "type": "module",

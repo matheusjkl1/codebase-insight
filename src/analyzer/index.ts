@@ -1,9 +1,9 @@
 import type { RetrievedChunk } from '../retriever';
-import { getSystemPrompt } from './prompts';
+import { getSystemPrompt, type AnalysisMode } from './prompts';
 import { ChatOpenAI } from '@langchain/openai';
 
 export interface AnalyzerProvider {
-  analyze(context: string): Promise<string>;
+  analyze(context: string, mode: AnalysisMode): Promise<string>;
 }
 
 export class OpenAIAnalyzerProvider implements AnalyzerProvider {
@@ -17,8 +17,8 @@ export class OpenAIAnalyzerProvider implements AnalyzerProvider {
     });
   }
 
-  async analyze(context: string): Promise<string> {
-    const prompt = getSystemPrompt() + '\n\n=== CONTEXTO DA BUSCA ===\n' + context;
+  async analyze(context: string, mode: AnalysisMode): Promise<string> {
+    const prompt = getSystemPrompt(mode) + '\n\n=== CONTEXTO DA BUSCA ===\n' + context;
     const response = await this.model.invoke(prompt);
     
     return typeof response.content === 'string' 
@@ -33,8 +33,8 @@ export class OpenRouterAnalyzerProvider implements AnalyzerProvider {
     private model: string = 'openai/gpt-4o-mini'
   ) {}
 
-  async analyze(context: string): Promise<string> {
-    const prompt = getSystemPrompt() + '\n\n=== CONTEXTO DA BUSCA ===\n' + context;
+  async analyze(context: string, mode: AnalysisMode): Promise<string> {
+    const prompt = getSystemPrompt(mode) + '\n\n=== CONTEXTO DA BUSCA ===\n' + context;
     
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
@@ -67,13 +67,14 @@ export class OpenRouterAnalyzerProvider implements AnalyzerProvider {
 
 export async function generateAnalysis(
   chunks: RetrievedChunk[],
-  provider: AnalyzerProvider
+  provider: AnalyzerProvider,
+  mode: AnalysisMode
 ): Promise<string> {
   const contextParts = chunks.map((chunk) => {
-    return `[Arquivo: ${chunk.path}]\n${chunk.content}`;
+    return `[Arquivo/Atributo: ${chunk.path}]\n${chunk.content}`;
   });
 
   const fullContext = contextParts.join('\n\n-----------------\n\n');
 
-  return provider.analyze(fullContext);
+  return provider.analyze(fullContext, mode);
 }
